@@ -1,0 +1,32 @@
+{
+  "scenes": [
+    {
+      "id": "cottage_intro",
+      "location": "cottage_living_room_day",
+
+      "character": "hero",
+      "mood": "confuse",
+      "text": "Tu viens d'arriver au chalet. Le vent souffle doucement et le feu crépite...",
+      "choices": [
+        { "text": "Explorer le chalet", "next": "cottage_dining" },
+        { "text": "Rester ici", "next": "cottage_wait" }
+      ]
+    },
+    {
+      "id": "cottage_dining",
+      "location": "cottage_dining_room_day",
+      "character": "none",
+      "text": "Le feu est agréable.",
+      "choices": [
+        { "text": "Retourner dans le salon", "next": "cottage_intro" }
+      ]
+    },
+    {
+      "id": "cottage_wait",
+      "location": "cottage_living_room_dusk",
+      "character": "mysterious_voice",
+      "text": "Une voix murmure ... 'C'est toi Jean ?'",
+      "choices": []
+    }
+  ]
+}

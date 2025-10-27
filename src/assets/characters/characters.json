@@ -1,0 +1,30 @@
+{
+  "characters": [
+    {
+      "id": "hero",
+      "moods": {
+        "confuse": "assets/images/characters/hero_confuse.png",
+        "normal": "assets/images/characters/hero_normal.png",
+        "angry": "assets/images/characters/hero_angry.png",
+        "sad": "assets/images/characters/hero_sad.png"
+      },
+      "displayName": "Alex",
+      "portraitPath": "assets/images/characters/hero.png",
+      "textColor": "#FFD700",
+      "fontFamily": "Arial",
+      "bold": true,
+      "italic": false,
+      "animationType": "typewriter"
+    },
+    {
+      "id": "mysterious_voice",
+      "displayName": "???",
+      "portraitPath": "assets/images/characters/mysterious_voice.png",
+      "textColor": "#FFD700",
+      "fontFamily": "Arial",
+      "bold": true,
+      "italic": true,
+      "animationType": "fade"
+    }
+  ]
+}
