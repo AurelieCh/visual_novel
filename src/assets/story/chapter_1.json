@@ -1,32 +1,120 @@
 {
   "scenes": [
     {
-      "id": "cottage_intro",
+      "id": "scene1",
       "location": "cottage_living_room_day",
-
-      "character": "hero",
-      "mood": "confuse",
-      "text": "Tu viens d'arriver au chalet. Le vent souffle doucement et le feu crépite...",
-      "choices": [
-        { "text": "Explorer le chalet", "next": "cottage_dining" },
-        { "text": "Rester ici", "next": "cottage_wait" }
-      ]
-    },
-    {
-      "id": "cottage_dining",
-      "location": "cottage_dining_room_day",
-      "character": "none",
-      "text": "Le feu est agréable.",
-      "choices": [
-        { "text": "Retourner dans le salon", "next": "cottage_intro" }
-      ]
-    },
-    {
-      "id": "cottage_wait",
-      "location": "cottage_living_room_dusk",
-      "character": "mysterious_voice",
-      "text": "Une voix murmure ... 'C'est toi Jean ?'",
-      "choices": []
+      "startNode": "node1",
+      "nodes": {
+        "node1": {
+          "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
+          "characters": [
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "confuse"
+            }
+          ],
+          "choices": [
+            {
+              "text": "Se lever",
+              "nextNode": "node2"
+            },
+            {
+              "text": "Rester couché",
+              "nextNode": "node3"
+            }
+          ]
+        },
+        "node2": {
+          "text": "Alex se lève et voit une silhouette étrange dans la pièce.",
+          "characters": [
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "normal"
+            },
+            {
+              "id": "mysterious_voice",
+              "x": "left",
+              "mood": "default"
+            }
+          ],
+          "choices": [
+            {
+              "text": "Parler à la silhouette",
+              "nextNode": "node4"
+            },
+            {
+              "text": "Ignorer",
+              "nextNode": "node5"
+            }
+          ]
+        },
+        "node3": {
+          "text": "Rester couché ne mène à rien... Le temps passe...",
+          "characters": [
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "sad"
+            }
+          ],
+          "choices": [
+            {
+              "text": "Se lever finalement",
+              "nextNode": "node2"
+            }
+          ]
+        },
+        "node4": {
+          "text": "\"Bienvenue, Alex...\" murmure la voix mystérieuse.",
+          "characters": [
+            {
+              "id": "mysterious_voice",
+              "x": "left",
+              "mood": "default"
+            },
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "normal"
+            }
+          ],
+          "choices": [
+            {
+              "text": "Qui es-tu ?",
+              "nextNode": "node6"
+            }
+          ]
+        },
+        "node5": {
+          "text": "La silhouette disparaît... Peut-être aurait-il fallu parler.",
+          "characters": [
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "angry"
+            }
+          ],
+          "choices": [
+            {
+              "text": "Se rattraper et parler",
+              "nextNode": "node4"
+            }
+          ]
+        },
+        "node6": {
+          "text": "La voix ne répond pas... L’aventure commence.",
+          "characters": [
+            {
+              "id": "hero",
+              "x": "center",
+              "mood": "normal"
+            }
+          ],
+          "choices": []
+        }
+      }
     }
   ]
 }

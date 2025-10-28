@@ -1,7 +1,9 @@
 package ui.components;
 
 import javafx.animation.*;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -9,19 +11,25 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 import model.Character;
+import ui.UIStyles;
 
 public class DialogueBox extends VBox {
     private final Label nameLabel;
     private final Label textLabel;
+    private Timeline currentTimeline;
 
     public DialogueBox() {
         nameLabel = new Label();
         textLabel = new Label();
         textLabel.setWrapText(true);
+        textLabel.setMaxWidth(Region.USE_COMPUTED_SIZE);
+        textLabel.setMaxHeight(Double.MAX_VALUE);
 
+        this.setMaxHeight(Region.USE_PREF_SIZE);
         this.setSpacing(5);
         this.getChildren().addAll(nameLabel, textLabel);
-        this.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6); -fx-padding: 20; -fx-background-radius: 15;");
+        UIStyles.styleDialogueBox(this);
+        this.setOnMouseClicked(_ -> handleMouseClick());
     }
 
     public void showDialogue(Character character, String text, Runnable onFinished) {
@@ -38,8 +46,17 @@ public class DialogueBox extends VBox {
 
             applyAnimation(character.getAnimationType(), onFinished);
         } else {
-            nameLabel.setText("");
+            nameLabel.setText("Narrateur");
+            nameLabel.setTextFill(Color.web(String.valueOf(Color.WHITE)));
+
+            FontWeight weight = FontWeight.BOLD;
+            FontPosture posture = FontPosture.REGULAR;
+
+            textLabel.setFont(Font.font("Arial", weight, posture, 18));
+            textLabel.setTextFill(Color.web(String.valueOf(Color.DARKCYAN)));
             textLabel.setText(text);
+
+            applyAnimation("typewriter", onFinished);
             if (onFinished != null) onFinished.run();
         }
     }
@@ -98,5 +115,22 @@ public class DialogueBox extends VBox {
         }
         if(onFinished != null) timeline.setOnFinished(_ -> onFinished.run());
         timeline.play();
+    }
+
+    /** Gère le clic de la souris : accélère l'animation uniquement */
+    private void handleMouseClick() {
+        if (currentTimeline != null && currentTimeline.getStatus() == Animation.Status.RUNNING) {
+            // 1. L'animation est en cours (Typewriter, Fade, etc.) -> Terminer immédiatement l'affichage
+            currentTimeline.stop();
+
+            String fullText = (String) textLabel.getUserData();
+            textLabel.setText(fullText);
+
+            if (currentTimeline.getOnFinished() != null) {
+                currentTimeline.getOnFinished().handle(new ActionEvent());
+            }
+            currentTimeline = null;
+
+        }
     }
 }

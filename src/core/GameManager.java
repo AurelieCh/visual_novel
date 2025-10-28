@@ -1,24 +1,26 @@
 package core;
 
 import javafx.stage.Stage;
-import model.GameScene;
+import model.*;
 import model.Character;
 import ui.components.GameScreen;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Classe qui gère la scène actuelle, les transitions, etc...
+ * Gère la logique du jeu : chargement des scènes, navigation entre les nœuds, etc.
  */
 public class GameManager {
+
     private static Stage stage;
     private static final Map<String, GameScene> scenes = new HashMap<>();
     private static final Map<String, Character> characters = new HashMap<>();
-    private static String currentSceneId;
 
-    // Initialisation avec les scènes et personnages
+    private static String currentSceneId;
+    private static String currentNodeId;
+
+    /**
+     * Initialise le jeu avec les scènes et personnages chargés
+     */
     public static void init(Stage s, List<GameScene> loadedScenes, List<Character> loadedCharacters) {
         stage = s;
 
@@ -32,19 +34,43 @@ public class GameManager {
             characters.put(character.getId(), character);
         }
 
-        currentSceneId = loadedScenes.getFirst().getId(); // première scène
-        showScene(currentSceneId);
+        // Démarrer avec la première scène et son premier nœud
+        if (!loadedScenes.isEmpty()) {
+            currentSceneId = loadedScenes.getFirst().getId();
+            GameScene firstScene = loadedScenes.getFirst();
+            currentNodeId = firstScene.getStartNode();
+            showNode(currentSceneId, currentNodeId);
+        } else {
+            System.err.println("[ERREUR] Aucune scène chargée !");
+        }
     }
 
-    // Afficher une scène donnée
-    public static void showScene(String id) {
-        currentSceneId = id;
-        GameScene scene = scenes.get(id);
+    /**
+     * Affiche un nœud spécifique dans une scène
+     */
+    public static void showNode(String sceneId, String nodeId) {
+        GameScene scene = scenes.get(sceneId);
+        if (scene == null) {
+            System.err.println("[ERREUR] Scène introuvable : " + sceneId);
+            return;
+        }
+
+        SceneNode node = scene.getNodes().get(nodeId);
+        if (node == null) {
+            System.err.println("[ERREUR] Nœud introuvable : " + nodeId + " dans la scène " + sceneId);
+            return;
+        }
+
+        currentSceneId = sceneId;
+        currentNodeId = nodeId;
+
         stage.setScene(GameScreen.create(stage, scene, characters));
     }
 
-    // Passer à la scène suivante
-    public static void nextScene(String id) {
-        showScene(id);
+    /**
+     * Passe au nœud suivant (via un choix par exemple)
+     */
+    public static void nextNode(String nextNodeId) {
+        showNode(currentSceneId, nextNodeId);
     }
 }

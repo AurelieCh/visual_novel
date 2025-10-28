@@ -1,20 +1,20 @@
 package model;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Classe permettant de stocker les infos d’une scène
- */
 public class GameScene {
-    public String id;
-    public String location;
-    public String character;
-    public String mood;
-    public String text;
-    public List<Choice> choices;
+    private final String id;
+    private final String location; // image de fond
+    private final String music;    // musique associée
+    private final String startNode; // id du dialogue de départ
+    private final Map<String, SceneNode> nodes = new HashMap<>();
 
-    public GameScene(String id, String location, String character, String text, List<Choice> choices) {
+    public GameScene(String id, String location, String music, String startNode) {
         this.id = id;
+        this.location = location;
+        this.music = music;
+        this.startNode = startNode;
     }
 
     public String getId() {
@@ -25,23 +25,27 @@ public class GameScene {
         return location;
     }
 
-    public String getCharacter() {
-        return character;
+    public String getStartNode() {
+        return startNode;
     }
 
-    public void setCharacter(String character) {
-        this.character = character;
+    public Map<String, SceneNode> getNodes() {
+        return nodes;
     }
 
-    public String getText() {
-        return text;
+    /**
+     * Retourne le nœud de départ
+     */
+    public SceneNode getStartNodeObject() {
+        return nodes.get(startNode);
     }
 
-    public List<Choice> getChoices() {
-        return choices;
-    }
-
-    public String getMood() {
-        return mood;
+    @Override
+    public String toString() {
+        return "GameScene{" +
+                "id='" + id + '\'' +
+                ", location='" + location + '\'' +
+                ", nodes=" + nodes.size() +
+                '}';
     }
 }

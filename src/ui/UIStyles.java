@@ -1,17 +1,26 @@
 package ui;
 
 import core.AudioManager;
+import core.SceneCharacter;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.control.Slider;
 
 public class UIStyles {
 
     public static final String TEXT_COLOR = "#000000";
     public static final Font MAIN_FONT = Font.font("Arial", 18);
+    private static final int DIALOG_BOX_BOTTOM_MARGIN = 70;
 
     // ======== Bouttons =========== //
     public static void styleButton(Button btn) {
@@ -52,19 +61,17 @@ public class UIStyles {
     // === Boutons de choix (dans les dialogues) ===
     public static void styleChoiceButton(Button button) {
         button.setStyle("""
-                    -fx-background-color: rgba(255,255,255,0.2);
+                    -fx-background-color: rgba(0,0,0,0.8);
                     -fx-text-fill: white;
                     -fx-font-size: 14px;
-                    -fx-border-color: white;
                     -fx-border-radius: 10;
                     -fx-background-radius: 10;
                     -fx-padding: 5 15 5 15;
                 """);
         button.setOnMouseEntered(_ -> button.setStyle("""
-                    -fx-background-color: rgba(255,255,255,0.4);
+                    -fx-background-color: rgba(0,0,0,0.9);
                     -fx-text-fill: white;
                     -fx-font-size: 14px;
-                    -fx-border-color: white;
                     -fx-border-radius: 10;
                     -fx-background-radius: 10;
                     -fx-padding: 5 15 5 15;
@@ -124,21 +131,57 @@ public class UIStyles {
         );
 
         slider.setOnMouseExited(_ ->
-            slider.lookupAll(".thumb").forEach(thumb ->
-                    thumb.setStyle("""
-                                -fx-background-color: white;
-                                -fx-background-radius: 50%;
-                                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0, 0, 2);
-                            """)
-            ));
+                slider.lookupAll(".thumb").forEach(thumb ->
+                        thumb.setStyle("""
+                                    -fx-background-color: white;
+                                    -fx-background-radius: 50%;
+                                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0, 0, 2);
+                                """)
+                ));
+    }
+
+    // === DialogBox === //
+    public static void styleDialogueBox(VBox box) {
+        box.setStyle("""
+                -fx-background-color: rgba(0, 0, 0, 0.8);
+                -fx-padding: 20; 
+                -fx-background-radius: 15;
+                """);
     }
 
     // === Outils d’alignement ===
-    public static void centerVBox(javafx.scene.layout.VBox box) {
-        box.setAlignment(Pos.CENTER);
+    public static void setPosDialogBox(VBox dialogueBox) {
+        StackPane.setAlignment(dialogueBox, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(dialogueBox, new Insets(0, 20, DIALOG_BOX_BOTTOM_MARGIN, 20));
     }
 
-    public static void bottomCenterVBox(javafx.scene.layout.VBox box) {
-        box.setAlignment(Pos.BOTTOM_CENTER);
+    public static void setPosChoices(FlowPane choices) {
+        choices.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        StackPane.setAlignment(choices, Pos.BOTTOM_CENTER);
+        StackPane.setMargin(choices, new Insets(0, 20, 20, 20));
+        choices.setAlignment(Pos.CENTER);
+        choices.setTranslateY(0);
+    }
+
+    public static void setPosCharacter(ImageView portrait, SceneCharacter sc, ReadOnlyDoubleProperty windowHeightProperty) {
+        // 1. Ancrage en bas et centré
+        StackPane.setAlignment(portrait, Pos.BOTTOM_CENTER);
+
+        // 2. 🚨 NOUVEAU : Liaison de la hauteur (Binding)
+        // Nous allons lier la hauteur ajustée du personnage à la hauteur de la fenêtre,
+        // multipliée par un facteur (ici, 65%, ou 0.65).
+        portrait.fitHeightProperty().bind(windowHeightProperty.multiply(0.65));
+
+        // 3. Maintenir le ratio
+        portrait.setPreserveRatio(true);
+
+        // 4. Décalage Horizontal (reste le même)
+        portrait.setTranslateX(sc.getPositionX());
+
+        // 5. Retrait de l'ancien setTranslateY (pour l'ancrage correct)
+        // AUCUN setTranslateY(X)
+
+        // (Optionnel) Ajout d'une petite marge si le bas de l'image est coupé par le bord :
+        // StackPane.setMargin(portrait, new Insets(0, 0, 10, 0));
     }
 }

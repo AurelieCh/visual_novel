@@ -1,11 +1,15 @@
 package model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Classe illustrant un choix possible dans une scène
+ * Représente un choix de dialogue menant vers un autre nœud.
  */
 public class Choice {
-    public String text;
-    public String next;
+    private final String text;
+    private final String next; // id du nœud suivant
+    private final Map<String, String> effects = new HashMap<>();
 
     public Choice(String text, String next) {
         this.text = text;
@@ -20,4 +24,3 @@ public class Choice {
         return next;
     }
 }
-

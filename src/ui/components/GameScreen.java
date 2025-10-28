@@ -1,88 +1,92 @@
 package ui.components;
 
+
 import core.GameManager;
-import javafx.geometry.Pos;
+import core.SceneCharacter;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import model.Character;
 import model.Choice;
 import model.GameScene;
-import model.Character;
+import model.SceneNode;
 import ui.UIStyles;
 
 import java.util.Map;
 
 public class GameScreen {
-
     public static Scene create(Stage stage, GameScene sceneData, Map<String, Character> charactersMap) {
-        // Infos
-        System.out.println(stage.toString());
-
         // ==== Background ====
         ImageView bg = new ImageView(new Image("file:src/assets/images/locations/cottage/" + sceneData.getLocation() + ".jpg"));
-        bg.setFitWidth(800);
-        bg.setFitHeight(600);
 
-        // ==== Character portrait ====
-        Character currentCharacter = charactersMap.get(sceneData.getCharacter());
-        ImageView portrait = null;
-        if (currentCharacter != null) {
-            String mood = sceneData.getMood() != null ? sceneData.getMood() : "default";
-            portrait = new ImageView(new Image("file:src/assets/images/characters/" + currentCharacter.getId() + "/"
-                    + currentCharacter.getId() + "_" + mood + ".jpg"));
-            portrait.setFitHeight(400);
-            portrait.setPreserveRatio(true);
+        // ==== Layout principal ====
+        StackPane root = new StackPane();
+
+        bg.fitWidthProperty().bind(root.widthProperty());
+        bg.fitHeightProperty().bind(root.heightProperty());
+        bg.setPreserveRatio(false); // Mettre à 'false' si on veut que l'image remplisse l'espace
+
+        root.getChildren().add(bg);
+        SceneNode node = sceneData.getStartNodeObject();
+
+        // ==== Personnages à l'écran ====
+        for (SceneCharacter sc : node.getCharacters()) {
+            Character charData = charactersMap.get(sc.getId());
+            if (charData != null) {
+                ImageView portrait = new ImageView(new Image(
+                        "file:src/assets/images/characters/" + charData.getId() + "/" +
+                                charData.getId() + "_" + sc.getMood() + ".jpg"
+                ));
+
+                UIStyles.setPosCharacter(portrait, sc, stage.heightProperty());
+                root.getChildren().add(portrait);
+            }
         }
 
-        // ==== Dialogue box ====
+        // ==== Dialogue Box ====
         DialogueBox dialogueBox = new DialogueBox();
+        UIStyles.setPosDialogBox(dialogueBox);
+        root.getChildren().add(dialogueBox);
 
         // ==== Choices ====
-        VBox choicesBox = new VBox(10);
-        UIStyles.centerVBox(choicesBox);
-        choicesBox.setDisable(true);
+        FlowPane choicesBox = new FlowPane(10, 10);
+        UIStyles.setPosChoices(choicesBox);
+        choicesBox.setDisable(true); // désactivé tant que le texte n'est pas fini
 
-        for (Choice c : sceneData.getChoices()) {
+        for (Choice c : node.getChoices()) {
             Button btn = new Button(c.getText());
             UIStyles.styleChoiceButton(btn);
-            btn.setOnAction(_ -> GameManager.nextScene(c.getNext()));
             btn.setVisible(false);
+            btn.setOnAction(_ -> GameManager.nextNode(c.getNext()));
             choicesBox.getChildren().add(btn);
         }
+        root.getChildren().add(choicesBox);
 
-        // ==== Layout interface ====
-        VBox dialogueArea = new VBox(10, dialogueBox, choicesBox);
-        UIStyles.bottomCenterVBox(dialogueArea);
-        dialogueArea.setTranslateY(-20);
-
-        StackPane root = new StackPane(bg);
-        if (portrait != null)
-            root.getChildren().add(portrait);
-        root.getChildren().add(dialogueArea);
-        StackPane.setAlignment(dialogueArea, Pos.BOTTOM_CENTER);
-
-        Scene scene = new Scene(root, 800, 600);
-
-        // ==== Afficher dialogue ====
-        dialogueBox.showDialogue(currentCharacter, sceneData.getText(), () -> enableChoices(choicesBox));
-
-        // === Activer les choix après animation typewriter ===
-        // On attend la fin de l’effet typewriter si c’est celui utilisé
-        if (currentCharacter != null && "typewriter".equals(currentCharacter.getAnimationType())) {
-            int delay = sceneData.getText().length() * 30 + 300; // durée typewriter + marge
-            new javafx.animation.PauseTransition(javafx.util.Duration.millis(delay))
-                    .setOnFinished(_ -> enableChoices(choicesBox));
-        } else {
-            enableChoices(choicesBox);
-        }
-
-        return scene;
+        // ==== Affichage du dialogue ====
+        Character speakingCharacter = charactersMap.get(node.getSpeakingCharacterId());
+        showDialogueWithCallback(dialogueBox, speakingCharacter, node.getText(), choicesBox);
+        return new Scene(root, 800, 600);
     }
 
-    private static void enableChoices(VBox choicesBox) {
+
+    /**
+     * Affiche le texte avec typewriter ou autre animation et active les choix ensuite
+     */
+    private static void showDialogueWithCallback(DialogueBox box, Character character, String text, FlowPane choicesBox) {
+        box.showDialogue(character, text, () ->
+                enableChoices(choicesBox)
+        );
+    }
+
+
+    /**
+     * Rend les boutons cliquables et visibles
+     */
+    private static void enableChoices(FlowPane choicesBox) {
         choicesBox.setDisable(false);
         for (javafx.scene.Node node : choicesBox.getChildren()) {
             node.setVisible(true);
