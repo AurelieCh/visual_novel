@@ -64,7 +64,7 @@ public class GameManager {
         currentSceneId = sceneId;
         currentNodeId = nodeId;
 
-        stage.setScene(GameScreen.create(stage, scene, characters));
+        stage.setScene(GameScreen.create(stage, scene, characters, currentNodeId));
     }
 
     /**

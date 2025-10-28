@@ -19,7 +19,7 @@ import ui.UIStyles;
 import java.util.Map;
 
 public class GameScreen {
-    public static Scene create(Stage stage, GameScene sceneData, Map<String, Character> charactersMap) {
+    public static Scene create(Stage stage, GameScene sceneData, Map<String, Character> charactersMap, String nodeId) {
         // ==== Background ====
         ImageView bg = new ImageView(new Image("file:src/assets/images/locations/cottage/" + sceneData.getLocation() + ".jpg"));
 
@@ -31,7 +31,7 @@ public class GameScreen {
         bg.setPreserveRatio(false); // Mettre à 'false' si on veut que l'image remplisse l'espace
 
         root.getChildren().add(bg);
-        SceneNode node = sceneData.getStartNodeObject();
+        SceneNode node = sceneData.getNodes().get(nodeId);
 
         // ==== Personnages à l'écran ====
         for (SceneCharacter sc : node.getCharacters()) {

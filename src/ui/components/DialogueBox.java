@@ -1,7 +1,6 @@
 package ui.components;
 
 import javafx.animation.*;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -16,7 +15,6 @@ import ui.UIStyles;
 public class DialogueBox extends VBox {
     private final Label nameLabel;
     private final Label textLabel;
-    private Timeline currentTimeline;
 
     public DialogueBox() {
         nameLabel = new Label();
@@ -29,7 +27,6 @@ public class DialogueBox extends VBox {
         this.setSpacing(5);
         this.getChildren().addAll(nameLabel, textLabel);
         UIStyles.styleDialogueBox(this);
-        this.setOnMouseClicked(_ -> handleMouseClick());
     }
 
     public void showDialogue(Character character, String text, Runnable onFinished) {
@@ -110,27 +107,10 @@ public class DialogueBox extends VBox {
 
         for (int i = 0; i < fullText.length(); i++) {
             final int index = i;
-            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30 * i),
+            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(30 * (double) i),
                     _ -> label.setText(fullText.substring(0, index + 1))));
         }
         if(onFinished != null) timeline.setOnFinished(_ -> onFinished.run());
         timeline.play();
-    }
-
-    /** Gère le clic de la souris : accélère l'animation uniquement */
-    private void handleMouseClick() {
-        if (currentTimeline != null && currentTimeline.getStatus() == Animation.Status.RUNNING) {
-            // 1. L'animation est en cours (Typewriter, Fade, etc.) -> Terminer immédiatement l'affichage
-            currentTimeline.stop();
-
-            String fullText = (String) textLabel.getUserData();
-            textLabel.setText(fullText);
-
-            if (currentTimeline.getOnFinished() != null) {
-                currentTimeline.getOnFinished().handle(new ActionEvent());
-            }
-            currentTimeline = null;
-
-        }
     }
 }

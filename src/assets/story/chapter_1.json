@@ -6,7 +6,7 @@
       "startNode": "node1",
       "nodes": {
         "node1": {
-          "text": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text.",
+          "text": "Tu est enfin arrivé au chalet, plutôt pas mal comme endroit. Il faudrait peut être explorer un peu les lieux ?",
           "characters": [
             {
               "id": "hero",
@@ -16,12 +16,12 @@
           ],
           "choices": [
             {
-              "text": "Se lever",
-              "nextNode": "node2"
+              "text": "Explorer",
+              "next": "node2"
             },
             {
-              "text": "Rester couché",
-              "nextNode": "node3"
+              "text": "Ne pas bouger",
+              "next": "node3"
             }
           ]
         },
@@ -42,11 +42,11 @@
           "choices": [
             {
               "text": "Parler à la silhouette",
-              "nextNode": "node4"
+              "next": "node4"
             },
             {
               "text": "Ignorer",
-              "nextNode": "node5"
+              "next": "node5"
             }
           ]
         },
@@ -62,7 +62,7 @@
           "choices": [
             {
               "text": "Se lever finalement",
-              "nextNode": "node2"
+              "next": "node2"
             }
           ]
         },
@@ -83,7 +83,7 @@
           "choices": [
             {
               "text": "Qui es-tu ?",
-              "nextNode": "node6"
+              "next": "node6"
             }
           ]
         },
@@ -99,7 +99,7 @@
           "choices": [
             {
               "text": "Se rattraper et parler",
-              "nextNode": "node4"
+              "next": "node4"
             }
           ]
         },
