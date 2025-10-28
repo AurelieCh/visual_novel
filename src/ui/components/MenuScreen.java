@@ -18,22 +18,31 @@ public class MenuScreen {
         AudioManager.playMusic("src/assets/sounds/musics/menu/menu.wav", true);
 
         ImageView bg = new ImageView(new Image("file:src/assets/images/locations/menu/background_menu.jpg"));
-        bg.setFitWidth(800);
-        bg.setFitHeight(600);
-
         StackPane root = new StackPane(bg);
+
+        root.setMaxWidth(Double.MAX_VALUE);
+        root.setMaxHeight(Double.MAX_VALUE);
+
+        bg.fitWidthProperty().bind(root.widthProperty());
+        bg.fitHeightProperty().bind(root.heightProperty());
 
         // Crée les menus
         MenuPrincipal menu = new MenuPrincipal();
 
         root.getChildren().addAll(menu.layout);
 
-        menu.play.setOnAction(_ ->
+        menu.play.setOnAction(_ -> {
+
+            // 🚨 1. SAUVEGARDER L'ÉTAT DU STAGE AVANT LE FADE OUT
+            final double currentWidth = stage.getWidth();
+            final double currentHeight = stage.getHeight();
+            final boolean isMaximized = stage.isMaximized();
+
             Animations.fadeOut(menu.layout, 1, () -> {
                 // Initialisation du GameManager avec les scènes et personnages
-                GameManager.init(stage, scenes, characters);
-            })
-        );
+                GameManager.init(stage, scenes, characters, currentWidth, currentHeight, isMaximized); // 🚨 Passer les dimensions
+            });
+        });
 
         menu.options.setOnAction(_ -> {
             // Retirer le layout menu principal et aller aux options

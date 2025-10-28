@@ -69,7 +69,7 @@ public class GameScreen {
         // ==== Affichage du dialogue ====
         Character speakingCharacter = charactersMap.get(node.getSpeakingCharacterId());
         showDialogueWithCallback(dialogueBox, speakingCharacter, node.getText(), choicesBox);
-        return new Scene(root, 800, 600);
+        return new Scene(root);
     }
 
 
