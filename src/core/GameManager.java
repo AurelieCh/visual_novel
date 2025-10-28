@@ -1,5 +1,6 @@
 package core;
 
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.*;
 import model.Character;
@@ -64,7 +65,20 @@ public class GameManager {
         currentSceneId = sceneId;
         currentNodeId = nodeId;
 
-        stage.setScene(GameScreen.create(stage, scene, characters, currentNodeId));
+        double currentWidth = stage.getWidth();
+        double currentHeight = stage.getHeight();
+        boolean isMaximized = stage.isMaximized();
+
+        Scene newScene = GameScreen.create(stage, scene, characters, currentNodeId);
+
+        stage.setScene(newScene);
+
+        if (isMaximized) {
+            stage.setMaximized(true);
+        } else {
+            stage.setWidth(currentWidth);
+            stage.setHeight(currentHeight);
+        }
     }
 
     /**
